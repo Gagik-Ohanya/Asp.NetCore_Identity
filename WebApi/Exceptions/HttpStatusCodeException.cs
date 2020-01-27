@@ -9,7 +9,7 @@ namespace WebApi.Exceptions
     public class HttpStatusCodeException : Exception
     {
         public int StatusCode { get; set; }
-        public string ContentType { get; set; } = @"text/plain";
+        public string ContentType { get; set; } = @"application/json";
 
         public HttpStatusCodeException(int statusCode)
         {
@@ -27,7 +27,6 @@ namespace WebApi.Exceptions
 
         public HttpStatusCodeException(int statusCode, JObject errorObject) : this(statusCode, errorObject.ToString())
         {
-            ContentType = @"application/json";
         }
     }
 }

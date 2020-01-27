@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using WebApi.Exceptions;
+using WebApi.Models;
 
 namespace WebApi.Middlewares
 {
@@ -33,7 +35,12 @@ namespace WebApi.Middlewares
                 httpContext.Response.StatusCode = ex.StatusCode;
                 httpContext.Response.ContentType = ex.ContentType;
 
-                await httpContext.Response.WriteAsync(ex.Message);
+                var result = JsonConvert.SerializeObject(new ErrorDetails
+                {
+                    StatusCode = ex.StatusCode,
+                    Message = ex.Message
+                });
+                await httpContext.Response.WriteAsync(result);
 
                 return;
             }

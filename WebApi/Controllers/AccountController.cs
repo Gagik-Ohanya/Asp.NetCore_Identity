@@ -50,7 +50,7 @@ namespace WebApi.Controllers
         public async Task<ApiLoginResponse> Login(ApiIdentity loginInput)
         {
             var user = await _userManager.FindByNameAsync(loginInput.Username);
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginInput.Password, false);
+            var result = await _signInManager.PasswordSignInAsync(user, loginInput.Password, isPersistent: false, false);
             if (!result.Succeeded)
                 throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "Username or password is wrong!");
 
