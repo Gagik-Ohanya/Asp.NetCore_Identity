@@ -25,14 +25,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ApiLoginResponse> Register(ApiIdentity registerInput)
+        public async Task<ApiLoginResponse> Register(ApiIdentity input)
         {
             var user = new IdentityUser
             {
-                UserName = registerInput.Username,
-                Email = registerInput.Email
+                UserName = input.Username,
+                Email = input.Email
             };
-            IdentityResult result = await _userManager.CreateAsync(user, registerInput.Password);
+            IdentityResult result = await _userManager.CreateAsync(user, input.Password);
             if (result.Succeeded)
                 await _signInManager.SignInAsync(user, isPersistent: false);
             else
@@ -41,24 +41,21 @@ namespace WebApi.Controllers
             return new ApiLoginResponse
             {
                 Succeeded = true,
-                Username = registerInput.Username,
-                Email = registerInput.Email
+                Username = input.Username
             };
         }
 
         [HttpPost]
-        public async Task<ApiLoginResponse> Login(ApiIdentity loginInput)
+        public async Task<ApiLoginResponse> Login(ApiLoginRequest input)
         {
-            var user = await _userManager.FindByNameAsync(loginInput.Username);
-            var result = await _signInManager.PasswordSignInAsync(user, loginInput.Password, isPersistent: false, false);
+            var result = await _signInManager.PasswordSignInAsync(input.Username, input.Password, isPersistent: false, false);
             if (!result.Succeeded)
                 throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "Username or password is wrong!");
 
             return new ApiLoginResponse
             {
                 Succeeded = true,
-                Username = loginInput.Username,
-                Email = loginInput.Email
+                Username = input.Username
             };
         }
 

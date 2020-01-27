@@ -1,7 +1,8 @@
 ﻿namespace WebApi.Models
 {
-    public class ApiLoginResponse : ApiResponseBase
+    public class ApiLoginRequest
     {
         public string Username { get; set; }
+        public string Password { get; set; }
     }
 }
