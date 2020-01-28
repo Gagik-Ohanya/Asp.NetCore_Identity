@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebApi.Exceptions;
+using BLL.Exceptions;
 using WebApi.Models;
 
 namespace WebApi.Controllers

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using WebApi.Exceptions;
+using BLL.Exceptions;
 using WebApi.Models;
 
 namespace WebApi.Middlewares

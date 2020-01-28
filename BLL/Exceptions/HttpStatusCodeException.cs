@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApi.Exceptions
+namespace BLL.Exceptions
 {
     public class HttpStatusCodeException : Exception
     {
