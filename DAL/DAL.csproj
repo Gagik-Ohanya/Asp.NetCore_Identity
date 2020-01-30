@@ -7,6 +7,14 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200125095236_InitialMigration.cs" />
     <Compile Remove="Migrations\20200125095236_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200129152039_SeedDataAdminRole.cs" />
+    <Compile Remove="Migrations\20200129152039_SeedDataAdminRole.Designer.cs" />
+    <Compile Remove="Migrations\20200129152222_SeedDataAdminRole.cs" />
+    <Compile Remove="Migrations\20200129152222_SeedDataAdminRole.Designer.cs" />
+    <Compile Remove="Migrations\20200129153458_AutoIncrementingIdsAdded.cs" />
+    <Compile Remove="Migrations\20200129153458_AutoIncrementingIdsAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200129153634_SeedDataAdminRole.cs" />
+    <Compile Remove="Migrations\20200129153634_SeedDataAdminRole.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Models;
 
-namespace WebApi
+namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -28,6 +28,7 @@ namespace WebApi
             string token = _userService.LogIn(input.ToBllLoginUser());
             return new ApiLoginResponse
             {
+                UserId = userId,
                 Succeeded = true,
                 Username = input.Username,
                 Token = token
@@ -47,10 +48,30 @@ namespace WebApi
         }
 
         [HttpPost]
-        [Authorize]
-        public IActionResult CreateRole()
+        [Authorize(Roles = "Admin")]
+        public ApiCreateRoleResponse CreateRole(ApiCreateRoleRequest input)
         {
-            return Ok();
+            int roleId = _userService.CreateRole(input.RoleName);
+            return new ApiCreateRoleResponse
+            {
+                Succeeded = true,
+                RoleId = roleId,
+                RoleName = input.RoleName
+            };
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ApiResponseBase AddUserToRole(ApiUserToRoleRequest input)
+        {
+            int userId = Convert.ToInt32(input.UserId);
+            int roleId = Convert.ToInt32(input.RoleId);
+            _userService.AddUserToRole(userId, roleId);
+            
+            return new ApiResponseBase
+            {
+                Succeeded = true
+            };
         }
     }
 }

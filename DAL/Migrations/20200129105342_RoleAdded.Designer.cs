@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200129105342_RoleAdded")]
+    partial class RoleAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,13 +35,6 @@ namespace DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("DAL.Entities.User", b =>
@@ -98,14 +93,6 @@ namespace DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRole");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            RoleId = 1,
-                            UserId = 1
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
