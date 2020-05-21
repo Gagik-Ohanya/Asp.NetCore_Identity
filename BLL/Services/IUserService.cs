@@ -1,5 +1,6 @@
 ﻿using BLL.Models;
 using DAL.Entities;
+using System.Threading.Tasks;
 
 namespace BLL.Services
 {
@@ -10,5 +11,6 @@ namespace BLL.Services
         User Authenticate(string username, string password);
         int CreateRole(string name);
         int AddUserToRole(int userId, int roleId);
+        Task TestCache(string value);
     }
 }

@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BLL.Exceptions;
-using WebApi.Models;
+using API.Models;
 
-namespace WebApi.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -36,7 +36,7 @@ namespace WebApi.Controllers
             if (result.Succeeded)
                 await _signInManager.SignInAsync(user, isPersistent: false);
             else
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
+                throw new CustomException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
 
             return new ApiLoginResponse
             {
@@ -45,12 +45,12 @@ namespace WebApi.Controllers
             };
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<ApiLoginResponse> Login(ApiLoginRequest input)
         {
             var result = await _signInManager.PasswordSignInAsync(input.Username, input.Password, isPersistent: false, false);
             if (!result.Succeeded)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "Username or password is wrong!");
+                throw new CustomException((int)HttpStatusCode.InternalServerError, "Username or password is wrong!");
 
             return new ApiLoginResponse
             {
@@ -59,6 +59,7 @@ namespace WebApi.Controllers
             };
         }
 
+        [HttpPut]
         public async Task<ApiResponseBase> Logout()
         {
             await _signInManager.SignOutAsync();

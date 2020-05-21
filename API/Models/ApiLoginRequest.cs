@@ -1,4 +1,4 @@
-﻿namespace WebApi.Models
+﻿namespace API.Models
 {
     public class ApiLoginRequest
     {

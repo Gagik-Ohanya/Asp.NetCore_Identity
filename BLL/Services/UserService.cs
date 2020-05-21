@@ -1,4 +1,5 @@
-﻿using BLL.Exceptions;
+﻿using BLL.Caching;
+using BLL.Exceptions;
 using BLL.Models;
 using DAL.Entities;
 using DAL.Repositories;
@@ -19,12 +20,14 @@ namespace BLL.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly ICacheProvider _cacheProvider;
         private readonly JwtSettings _jwtSettings;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IOptions<AppSettings> appSettings)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, ICacheProvider cacheProvider, IOptions<AppSettings> appSettings)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _cacheProvider = cacheProvider;
             _jwtSettings = appSettings.Value.JwtSettings;
         }
 
@@ -56,7 +59,7 @@ namespace BLL.Services
             string passwordHash = CommonFunctions.ComputeMd5(password + "salt");
             User user = _userRepository.Get(username, passwordHash);
             if (user == null)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "User not found!");
+                throw new CustomException((int)HttpStatusCode.InternalServerError, "User not found!");
             return user;
         }
 
@@ -100,10 +103,10 @@ namespace BLL.Services
         {
             User user = _userRepository.Get(userId);
             if (user == null)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "User not found!");
+                throw new CustomException((int)HttpStatusCode.InternalServerError, "User not found!");
             Role role = _roleRepository.GetById(roleId);
             if (role == null)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "Role doesn't exist!");
+                throw new CustomException((int)HttpStatusCode.InternalServerError, "Role doesn't exist!");
 
             var userRole = new UserRole
             {
@@ -113,6 +116,18 @@ namespace BLL.Services
             _roleRepository.AddUserRole(userRole);
             _roleRepository.Commit();
             return userRole.Id;
+        }
+
+        public async Task TestCache(string value)
+        {
+            string key = "key";
+            
+            await _cacheProvider.SetAsync(key, value);
+            var result = await _cacheProvider.GetAsync<int>(key);
+            
+            
+            await _cacheProvider.SetCache(key, value);
+            var memResult = await _cacheProvider.GetCache<string>(key);
         }
     }
 }

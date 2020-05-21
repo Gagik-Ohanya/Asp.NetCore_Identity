@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BLL.Models;
 using BLL.Services;
+using BLL.Caching;
 using DAL;
 using DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,9 +20,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using WebApi.Middlewares;
+using API.Middlewares;
+using Microsoft.OpenApi.Models;
 
-namespace WebApi
+namespace API
 {
     public class Startup
     {
@@ -40,7 +42,7 @@ namespace WebApi
             {
                 options.UseSqlServer(Configuration.GetConnectionString("AppDbContext"));
             });
-            //services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
             services.Configure<AppSettings>(Configuration);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -59,9 +61,26 @@ namespace WebApi
                     };
                 });
 
+            services.AddEnyimMemcached(options =>
+            {
+                options.AddServer("desktop-65eaebf", 11211);
+                options.Protocol = Enyim.Caching.Memcached.MemcachedProtocol.Text;
+            });
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+            });
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddSingleton<ICacheProvider, CacheProvider>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,17 +89,25 @@ namespace WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseHttpStatusCodeExceptionMiddleware();
+                app.UseCustomExceptionMiddleware();
             }
             else
             {
-                app.UseHttpStatusCodeExceptionMiddleware();
+                app.UseCustomExceptionMiddleware();
                 app.UseExceptionHandler();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+            });
 
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseEnyimMemcached();
 
             app.UseEndpoints(endpoints =>
             {

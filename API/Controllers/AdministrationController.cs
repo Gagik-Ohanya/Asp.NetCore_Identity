@@ -7,9 +7,9 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using BLL.Exceptions;
-using WebApi.Models;
+using API.Models;
 
-namespace WebApi.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -34,7 +34,7 @@ namespace WebApi.Controllers
             };
             IdentityResult result = await _roleManager.CreateAsync(identityRole);
             if (!result.Succeeded)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
+                throw new CustomException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
             
             return new ApiResponseBase
             {
@@ -47,11 +47,11 @@ namespace WebApi.Controllers
         {
             IdentityRole role = await _roleManager.FindByIdAsync(inputRole.Id);
             if (role == null)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "Role doesn't exist!");
+                throw new CustomException((int)HttpStatusCode.InternalServerError, "Role doesn't exist!");
             role.Name = inputRole.Name;
             IdentityResult result = await _roleManager.UpdateAsync(role);
             if(!result.Succeeded)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
+                throw new CustomException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
 
             return new ApiEditRoleResponse
             {
@@ -79,15 +79,15 @@ namespace WebApi.Controllers
         {
             IdentityUser user = await _userManager.FindByIdAsync(input.UserId);
             if (user == null)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "User not found!");
+                throw new CustomException((int)HttpStatusCode.InternalServerError, "User not found!");
             
             IdentityRole role = await _roleManager.FindByIdAsync(input.RoleId);
             if (role == null)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, "Role not found!");
+                throw new CustomException((int)HttpStatusCode.InternalServerError, "Role not found!");
 
             IdentityResult result = await _userManager.AddToRoleAsync(user, role.Name);
             if (!result.Succeeded)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
+                throw new CustomException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
 
             return new ApiResponseBase { Succeeded = true };
         }
@@ -100,7 +100,7 @@ namespace WebApi.Controllers
 
             IdentityResult result = await _userManager.RemoveFromRoleAsync(user, role.Name);
             if (!result.Succeeded)
-                throw new HttpStatusCodeException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
+                throw new CustomException((int)HttpStatusCode.InternalServerError, result.Errors.First().Description);
 
             return new ApiResponseBase { Succeeded = true };
         }

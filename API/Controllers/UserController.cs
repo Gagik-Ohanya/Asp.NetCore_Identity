@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Models;
+using API.Models;
 
-namespace WebApi.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -72,6 +72,13 @@ namespace WebApi.Controllers
             {
                 Succeeded = true
             };
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TestCache(string value)
+        {
+            await _userService.TestCache(value);
+            return Ok();
         }
     }
 }

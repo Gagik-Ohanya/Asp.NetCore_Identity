@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Models;
+using API.Models;
 
-namespace WebApi
+namespace API
 {
     public static class Mapper
     {
